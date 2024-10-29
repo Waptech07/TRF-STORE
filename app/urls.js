@@ -1,1 +1,3 @@
-const baseUrl = "https://trf-store.vercel.app/"
+const baseUrl = "https://trf-store-api.vercel.app/";
+
+export default baseUrl;
