@@ -14,7 +14,7 @@ import { Menu as MenuIcon, Close as CloseIcon, Category, ShoppingCart } from '@m
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 
-const drawerWidth = 240;
+const drawerWidth = 250;
 
 export default function Sidebar() {
     const router = useRouter();
@@ -42,6 +42,7 @@ export default function Sidebar() {
                     zIndex: 1000,
                     backgroundColor: theme.palette.primary.main,
                     color: 'white',
+                    m: 1,
                 }}
             >
                 {open ? <CloseIcon /> : <MenuIcon />}
@@ -56,7 +57,11 @@ export default function Sidebar() {
                     '& .MuiDrawer-paper': {
                         width: drawerWidth,
                         boxSizing: 'border-box',
-                        backgroundColor: theme.palette.background.default,
+                        p: 3,
+                        bgcolor: 'rgba(255, 255, 255, 0.9)',
+                        borderRadius: 2,
+                        margin: '16px 16px 16px 8px', // Adds space on right and bottom
+                        height: 'calc(100vh - 32px)', // Adjusts height to accommodate top and bottom spacing
                         boxShadow: theme.shadows[3],
                         transition: theme.transitions.create('width', {
                             easing: theme.transitions.easing.sharp,
