@@ -15,17 +15,22 @@ import {
     Button,
     Box,
     useMediaQuery,
+    IconButton,
 } from '@mui/material';
+import { Delete as DeleteIcon } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@mui/material/styles';
 import AddCategory from './add_category';
 import EditCategory from './edit_category';
 import baseUrl from '../urls';
+import { useSession } from 'next-auth/react';
 
 const API_URL = `${baseUrl}api/v1/categories`;
+const API_DELETE_URL = `${baseUrl}api/v1/category`;
 
 export default function CategoryList() {
     const router = useRouter();
+    const { data: session } = useSession();
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -62,6 +67,23 @@ export default function CategoryList() {
     const handleEditClick = (categoryId) => {
         setCurrentCategoryId(categoryId);
         setEditMode(true);
+    };
+
+    const handleDelete = async (categoryId) => {
+        try {
+            const response = await fetch(`${API_DELETE_URL}/${categoryId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${session.accessToken}`,
+                },
+            });
+            if (!response.ok) throw new Error('Failed to delete category');
+            // Update categories after deletion
+            setCategories(categories.filter(category => category.id !== categoryId));
+        } catch (err) {
+            console.error("Error deleting category:", err.message);
+            setError('Failed to delete category');
+        }
     };
 
     if (loading) {
@@ -122,6 +144,9 @@ export default function CategoryList() {
                                     <Button variant="outlined" onClick={() => handleEditClick(category.id)}>
                                         Edit
                                     </Button>
+                                    <IconButton color="error" onClick={() => handleDelete(category.id)} sx={{ ml: 1 }}>
+                                        <DeleteIcon />
+                                    </IconButton>
                                 </TableCell>
                             </TableRow>
                         ))}

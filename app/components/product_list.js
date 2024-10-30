@@ -1,15 +1,19 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton } from '@mui/material';
 import ViewProduct from './view_product';
 import axios from 'axios';
 import baseUrl from '../urls';
+import { Delete as DeleteIcon } from '@mui/icons-material';
+import { useSession } from 'next-auth/react';
 
 const API_URL_PRODUCTS = `${baseUrl}api/v1/products`;
 const API_URL_CATEGORIES = `${baseUrl}api/v1/categories`;
+const API_DELETE_URL_PRODUCT = `${baseUrl}api/v1/product`;
 
 export default function ProductList() {
+    const { data: session } = useSession();
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState({});
     const [selectedProduct, setSelectedProduct] = useState(null);
@@ -35,6 +39,19 @@ export default function ProductList() {
 
     const handleViewProduct = (product) => {
         setSelectedProduct(product);
+    };
+
+    const handleDeleteProduct = async (productId) => {
+        try {
+            await axios.delete(`${API_DELETE_URL_PRODUCT}/${productId}`, {
+                headers: {
+                    'Authorization': `Bearer ${session.accessToken}`,
+                },
+            });
+            setProducts(products.filter(product => product.id !== productId));
+        } catch (error) {
+            console.error("Failed to delete product:", error);
+        }
     };
 
     // Function to update the product list after an edit
@@ -70,6 +87,12 @@ export default function ProductList() {
                                     >
                                         View
                                     </Button>
+                                    <IconButton
+                                        color="error"
+                                        onClick={() => handleDeleteProduct(product.id)}
+                                    >
+                                        <DeleteIcon />
+                                    </IconButton>
                                 </TableCell>
                             </TableRow>
                         ))}
