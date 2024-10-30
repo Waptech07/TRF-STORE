@@ -28,8 +28,8 @@ export default function LoginPage() {
 
     useEffect(() => {
         if (status === 'authenticated') {
-            router.push('/admin/categories');
-        }
+            router.replace('/admin/categories');
+        }        
     }, [status, router]);
 
     useEffect(() => {

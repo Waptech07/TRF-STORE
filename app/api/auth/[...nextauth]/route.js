@@ -38,16 +38,18 @@ export const authOptions = {
     callbacks: {
         async jwt({ token, user }) {
             if (user) {
+                console.log("User authenticated, setting token:", user.accessToken);
                 token.accessToken = user.accessToken;
             }
             return token;
         },
         async session({ session, token }) {
             session.accessToken = token.accessToken;
+            console.log("Session created with access token:", session.accessToken);
             return session;
-        },
+        }        
     },
-    secret: process.env.SECRET,
+    secret: process.env.NEXTAUTH_SECRET,
 };
 
 const handler = NextAuth(authOptions);
