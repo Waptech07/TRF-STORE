@@ -12,13 +12,16 @@ export default function ProductsPage() {
     const { data: session, status } = useSession();
     const router = useRouter();
     const [isAddingProduct, setIsAddingProduct] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
 
     useEffect(() => {
-        if (status === 'loading') return;
-        if (!session) router.push('/login');
+        setIsMounted(true);
+        if (status !== 'loading' && !session) {
+            router.push('/login');
+        }
     }, [session, status, router]);
 
-    if (status === 'loading') {
+    if (!isMounted || status === 'loading') {
         return (
             <Container maxWidth="md" sx={{ mt: 4, textAlign: 'center' }}>
                 <Typography variant="h6">Loading...</Typography>

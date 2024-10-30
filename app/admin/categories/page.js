@@ -2,7 +2,7 @@
 
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Container, Box, Toolbar, Typography } from '@mui/material';
 import Sidebar from '../../components/sidebar';
 import CategoryList from '../../components/category_list';
@@ -10,13 +10,16 @@ import CategoryList from '../../components/category_list';
 export default function CategoriesPage() {
     const { data: session, status } = useSession();
     const router = useRouter();
+    const [isMounted, setIsMounted] = useState(false);
 
     useEffect(() => {
-        if (status === 'loading') return;
-        if (!session) router.push('/login');
+        setIsMounted(true);
+        if (status !== 'loading' && !session) {
+            router.push('/login');
+        }
     }, [session, status, router]);
 
-    if (status === 'loading') {
+    if (!isMounted || status === 'loading') {
         return (
             <Container maxWidth="md" sx={{ mt: 4, textAlign: 'center' }}>
                 <Typography variant="h6">Loading...</Typography>
