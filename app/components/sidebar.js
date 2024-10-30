@@ -9,6 +9,7 @@ import {
     IconButton,
     Box,
     useMediaQuery,
+    Typography,
 } from '@mui/material';
 import { Menu as MenuIcon, Close as CloseIcon, Category, ShoppingCart } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
@@ -60,8 +61,8 @@ export default function Sidebar() {
                         p: 3,
                         bgcolor: 'rgba(255, 255, 255, 0.9)',
                         borderRadius: 2,
-                        margin: '16px 16px 16px 8px', // Adds space on right and bottom
-                        height: 'calc(100vh - 32px)', // Adjusts height to accommodate top and bottom spacing
+                        margin: '16px 16px 16px 8px',
+                        height: 'calc(100vh - 32px)',
                         boxShadow: theme.shadows[3],
                         transition: theme.transitions.create('width', {
                             easing: theme.transitions.easing.sharp,
@@ -72,10 +73,11 @@ export default function Sidebar() {
             >
                 <Toolbar />
                 <List>
+                    <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'primary.main'}}>Welcome Admin</Typography>
                     {menuItems.map((item, index) => (
                         <ListItem
-                            button
                             key={index}
+                            button={true}
                             onClick={() => router.push(item.path)}
                             sx={{
                                 '&:hover': {
