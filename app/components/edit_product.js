@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+"use client"
+
+import { useState, useEffect } from 'react';
 import { Box, Button, TextField, Typography, Grid, MenuItem, Input } from '@mui/material';
 import axios from 'axios';
 import baseUrl from '../urls';
@@ -66,7 +68,7 @@ export default function EditProduct({ product, onCloseEdit }) {
                 },
             });
             if (res.status === 200) {
-                onCloseEdit(); // Close the edit modal on success
+                onCloseEdit();
             }
         } catch (error) {
             console.error("Error updating product", error);
