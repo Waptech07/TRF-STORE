@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from 'react';
-import { Button, Box, Typography, Modal } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Button, Box, Typography, Modal, Container } from '@mui/material';
 import ProductList from '../../components/product_list';
 import AddProduct from '../../components/add_product';
 import Sidebar from '@/app/components/sidebar';
@@ -55,7 +55,7 @@ export default function ProductsPage() {
                     boxShadow: 4,
                 }}
             >
-                <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'primary.main' }}>Product Management</Typography>
+                <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'primary.main', marginTop: 2 }}>Product Management</Typography>
                 <Button variant="contained" color="primary" onClick={handleAddProductOpen} style={{ margin: '20px 0' }}>
                     Add Product
                 </Button>

@@ -45,7 +45,7 @@ export default function CategoriesPage() {
                     boxShadow: 4,
                 }}
             >
-                <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'primary.main' }}>Category Management</Typography>
+                <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'primary.main', marginTop: 2 }}>Category Management</Typography>
                 <Container maxWidth="lg" sx={{ mt: 4 }}>
                     <CategoryList />
                 </Container>
