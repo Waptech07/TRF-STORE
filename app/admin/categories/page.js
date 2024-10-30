@@ -1,4 +1,3 @@
-// app/admin/categories/page.js
 'use client';
 
 import { useSession } from 'next-auth/react';
@@ -46,10 +45,8 @@ export default function CategoriesPage() {
                     boxShadow: 4,
                 }}
             >
+                <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'primary.main' }}>Category Management</Typography>
                 <Container maxWidth="lg" sx={{ mt: 4 }}>
-                    <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-                        Categories
-                    </Typography>
                     <CategoryList />
                 </Container>
                 <Toolbar />

@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from 'react';
 import { Box, Button, TextField, Typography, Grid, MenuItem } from '@mui/material';
 import axios from 'axios';
@@ -55,14 +57,14 @@ export default function AddProduct({ onClose }) {
             noValidate
             autoComplete="off"
             sx={{
-                maxWidth: '90vw',  // Wider width
-                maxHeight: '90vh', // Max height for vertical scrolling
-                mx: "auto",
+                maxWidth: '80vw',
+                maxHeight: '80vh',
+                margin: '50px auto',
                 p: 3,
                 bgcolor: '#f5f5f5',
                 borderRadius: 2,
                 boxShadow: 3,
-                overflowY: 'auto'  // Enable vertical scroll if content overflows
+                overflowY: 'auto'
             }}
         >
             <Typography variant="h5" color="primary" gutterBottom sx={{ textAlign: 'center', mb: 3 }}>
