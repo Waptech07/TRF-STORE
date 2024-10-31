@@ -38,14 +38,12 @@ export const authOptions = {
     callbacks: {
         async jwt({ token, user }) {
             if (user) {
-                console.log("User authenticated, setting token:", user.accessToken);
                 token.accessToken = user.accessToken;
             }
             return token;
         },
         async session({ session, token }) {
             session.accessToken = token.accessToken;
-            console.log("Session created with access token:", session.accessToken);
             return session;
         }        
     },
