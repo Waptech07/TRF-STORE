@@ -17,7 +17,7 @@ export default function ProductsPage() {
     useEffect(() => {
         setIsMounted(true);
         if (status !== 'loading' && !session) {
-            router.push('/login');
+            router.push('/admin/login');
         }
     }, [session, status, router]);
 

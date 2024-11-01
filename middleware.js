@@ -10,7 +10,7 @@ export async function middleware(req) {
 
     if (isProtectedRoute && !token) {
         // Redirect unauthenticated users to the login page
-        return NextResponse.redirect(new URL('/login', req.url));
+        return NextResponse.redirect(new URL('/admin/login', req.url));
     }
 
     return NextResponse.next();
