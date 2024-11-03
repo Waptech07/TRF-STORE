@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { HiOutlineX, HiTrash } from "react-icons/hi";
+import { HiOutlineX, HiTrash, HiShoppingCart } from "react-icons/hi";
+import { FaWhatsapp } from "react-icons/fa";
 
 const Cart = ({ onClose }) => {
   const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {
-    // Fetch cart items from local storage when the component mounts
     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
     setCartItems(storedCart);
   }, []);
@@ -43,7 +43,15 @@ const Cart = ({ onClose }) => {
     updateCartInLocalStorage(updatedCart);
   };
 
+  const calculateTotalPrice = () => {
+    return cartItems.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0
+    );
+  };
+
   const handleWhatsApp = () => {
+    const totalPrice = calculateTotalPrice();
     const message =
       "I would like to purchase the following items:\n" +
       cartItems
@@ -53,15 +61,34 @@ const Cart = ({ onClose }) => {
               item.size
             } - Quantity: ${item.quantity}`
         )
-        .join("\n");
+        .join("\n") +
+      `\n\nTotal Price: ₦${totalPrice.toFixed(2)}`;
+
     const whatsappUrl = `https://wa.me/+2348101865915?text=${encodeURIComponent(
       message
     )}`;
-    window.open(whatsappUrl, "_blank");
+
+    const confirmOrder = window.confirm(
+      "Are you sure you want to place this order? You will be redirected to WhatsApp."
+    );
+
+    if (confirmOrder) {
+      window.open(whatsappUrl, "_blank");
+    }
+  };
+
+  const handleClearCart = () => {
+    const confirmClear = window.confirm(
+      "Are you sure you want to clear all items from your cart?"
+    );
+    if (confirmClear) {
+      localStorage.removeItem("cart");
+      setCartItems([]);
+    }
   };
 
   return (
-    <div className="fixed right-0 top-16 w-80 h-96 bg-white shadow-lg p-4 border border-gray-300 z-50 rounded-lg overflow-y-auto">
+    <div className="fixed right-0 top-16 w-80 h-96 bg-white shadow-lg p-4 border border-gray-300 z-50 rounded-lg flex flex-col justify-between overflow-y-auto">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold text-gray-800">Shopping Cart</h2>
         <HiOutlineX
@@ -69,9 +96,12 @@ const Cart = ({ onClose }) => {
           onClick={onClose}
         />
       </div>
-      <div className="mt-2">
+      <div className="mt-2 flex-grow overflow-y-auto">
         {cartItems.length === 0 ? (
-          <p className="text-gray-600">Your cart is empty.</p>
+          <p className="text-center text-gray-600 bg-gray-100 p-4 rounded-md">
+            <HiShoppingCart className="text-3xl mx-auto mb-2" />
+            Your cart is empty.
+          </p>
         ) : (
           cartItems.map((item) => (
             <div
@@ -82,20 +112,25 @@ const Cart = ({ onClose }) => {
                 <strong className="text-gray-700">{item.name}</strong>
                 <p className="text-gray-600">₦{item.price.toFixed(2)}</p>
                 <p className="text-gray-600">Size: {item.size}</p>
-                <div className="flex items-center mt-1">
-                  <button
-                    className="bg-gray-200 text-gray-700 rounded-l px-2 py-1 hover:bg-gray-300"
-                    onClick={() => handleDecreaseQuantity(item.id, item.size)}
-                  >
-                    -
-                  </button>
-                  <span className="mx-2">{item.quantity}</span>
-                  <button
-                    className="bg-gray-200 text-gray-700 rounded-r px-2 py-1 hover:bg-gray-300"
-                    onClick={() => handleIncreaseQuantity(item.id, item.size)}
-                  >
-                    +
-                  </button>
+                <div className="flex items-center">
+                  <div className="flex items-center mt-1">
+                    <button
+                      className="bg-gray-200 text-gray-700 rounded-l px-2 py-1 hover:bg-gray-300"
+                      onClick={() => handleDecreaseQuantity(item.id, item.size)}
+                    >
+                      -
+                    </button>
+                    <span className="mx-2">{item.quantity}</span>
+                    <button
+                      className="bg-gray-200 text-gray-700 rounded-r px-2 py-1 hover:bg-gray-300"
+                      onClick={() => handleIncreaseQuantity(item.id, item.size)}
+                    >
+                      +
+                    </button>
+                  </div>
+                  <p className="text-gray-600 ml-4 font-semibold">
+                    ₦{(item.price * item.quantity).toFixed(2)}
+                  </p>
                 </div>
               </div>
               <HiTrash
@@ -106,12 +141,27 @@ const Cart = ({ onClose }) => {
           ))
         )}
       </div>
-      <button
-        className="mt-4 w-full bg-green-500 text-white py-2 rounded hover:bg-green-600 transition"
-        onClick={handleWhatsApp}
-      >
-        Order Now
-      </button>
+      {cartItems.length > 0 && (
+        <div className="flex flex-col border-t border-gray-200 pt-4 mt-4">
+          <p className="text-lg font-bold text-gray-700 mb-2">
+            Total: ₦{calculateTotalPrice().toFixed(2)}
+          </p>
+          <div className="flex gap-3">
+            <button
+              className="flex-1 bg-green-600 text-white py-2 rounded-md flex items-center justify-center gap-2 hover:bg-green-700 transition"
+              onClick={handleWhatsApp}
+            >
+              <FaWhatsapp /> Order Now
+            </button>
+            <button
+              className="flex-1 bg-red-600 text-white py-2 rounded-md flex items-center justify-center gap-2 hover:bg-red-700 transition"
+              onClick={handleClearCart}
+            >
+              <HiTrash /> Clear Cart
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

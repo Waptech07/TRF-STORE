@@ -151,7 +151,7 @@ export default function Navbar() {
                   placeholder="Search for products..."
                   value={searchTerm}
                   onChange={handleSearch}
-                  className="w-full px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:border-black"
+                  className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-black"
                 />
                 <BiSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
               </div>
@@ -200,11 +200,16 @@ export default function Navbar() {
                         </div>
                       </>
                     ) : (
-                      <div className="flex-1">
-                        <strong className="text-lg">
-                          Category: {result.name}
-                        </strong>
-                      </div>
+                      <>
+                        <div className="flex">
+                          <div className="flex-1">
+                            <p className="text-sm">Category</p>
+                            <span className="font-bold text-black">
+                              {result.name}
+                            </span>
+                          </div>
+                        </div>
+                      </>
                     )}
                   </div>
                 ))}

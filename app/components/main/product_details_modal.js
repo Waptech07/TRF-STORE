@@ -38,7 +38,7 @@ const ProductDetailsModal = ({ isOpen, onClose, productId }) => {
             `https://trf-store-api.vercel.app/api/v1/category/${productData.category_id}`
           );
           const categoryData = await categoryResponse.json();
-          setCategoryName(categoryData.name);
+          setCategoryName(categoryData.name || "Unknown");
         } catch (error) {
           console.error("Error fetching product or category:", error);
         }
@@ -94,7 +94,7 @@ const ProductDetailsModal = ({ isOpen, onClose, productId }) => {
         <img
           src={product.image_files[i]}
           alt={`${product.name} ${i + 1}`}
-          style={{ borderRadius: "4px" }}
+          style={{ width: "1000px",  borderRadius: "4px" }}
         />
       </a>
     ),
@@ -104,6 +104,9 @@ const ProductDetailsModal = ({ isOpen, onClose, productId }) => {
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 2000,
+    pauseOnHover: true,
   };
 
   return (
@@ -160,14 +163,22 @@ const ProductDetailsModal = ({ isOpen, onClose, productId }) => {
             <Typography
               variant="body2"
               color="textSecondary"
-              sx={{ mb: 1, fontStyle: "italic", color: "#777" }}
+              sx={{ my: 1, fontStyle: "italic", color: "#777" }}
             >
-              Category: {categoryName}
+              <strong className="font-bold">Category:</strong> {categoryName}
             </Typography>
 
             <Typography variant="h5" sx={{ fontWeight: "bold", color: "#000" }}>
-              ₦{product.discount_price}{" "}
-              <span style={{ color: "#777", textDecoration: "line-through" }}>
+              {product.discount_percent > 0 && (
+                <span>₦{product.discount_price} </span>
+              )}
+              <span
+                style={{
+                  color: product.discount_percent > 0 ? "#777" : "#000",
+                  textDecoration:
+                    product.discount_percent > 0 ? "line-through" : "none",
+                }}
+              >
                 ₦{product.price}
               </span>
               {product.discount_percent > 0 && (
@@ -192,7 +203,7 @@ const ProductDetailsModal = ({ isOpen, onClose, productId }) => {
                 Available Sizes
               </Typography>
               <Box display="flex" gap={1} flexWrap="wrap">
-                {product.size[0].split(",").map((size, index) => (
+                {product.size?.[0]?.split(",").map((size, index) => (
                   <Box
                     key={index}
                     sx={{
@@ -201,15 +212,16 @@ const ProductDetailsModal = ({ isOpen, onClose, productId }) => {
                       border: "1px solid #ddd",
                       textAlign: "center",
                       cursor: "pointer",
-                      backgroundColor: selectedSize === size ? "#333" : "white",
-                      color: selectedSize === size ? "white" : "#333",
+                      backgroundColor:
+                        selectedSize === size.trim() ? "#333" : "white",
+                      color: selectedSize === size.trim() ? "white" : "#333",
                       borderRadius: "4px",
                       transition: "background-color 0.2s, color 0.2s",
                       "&:hover": { backgroundColor: "#333", color: "white" },
                     }}
-                    onClick={() => setSelectedSize(size)}
+                    onClick={() => setSelectedSize(size.trim())}
                   >
-                    {size}
+                    {size.trim()}
                   </Box>
                 ))}
               </Box>

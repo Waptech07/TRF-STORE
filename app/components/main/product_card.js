@@ -50,7 +50,10 @@ const ProductCard = ({ product }) => {
             <HiInformationCircle className="text-2xl" />
           </motion.div>
 
-          <motion.div className="bg-gray-950 p-2 text-white flex hover:bg-gray-800 cursor-pointer">
+          <motion.div
+            onClick={handleOpenModal}
+            className="bg-gray-950 p-2 text-white flex hover:bg-gray-800 cursor-pointer"
+          >
             <HiShoppingBag className="text-2xl" />
           </motion.div>
         </div>
@@ -58,7 +61,7 @@ const ProductCard = ({ product }) => {
       <ProductDetailsModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        productId={product.id} // Pass product ID to fetch details
+        productId={product.id}
       />
     </>
   );

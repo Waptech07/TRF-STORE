@@ -99,6 +99,8 @@ export default function HomePage() {
             )}
           </motion.div>
         </div>
+        <div className="pb-10">
+          
         <motion.div
           className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
           initial="hidden"
@@ -113,8 +115,8 @@ export default function HomePage() {
         >
           {filteredProducts.map((product) => (
             <motion.div
-              key={product.id}
-              variants={{
+            key={product.id}
+            variants={{
                 hidden: { opacity: 0, y: 20 },
                 visible: { opacity: 1, y: 0 },
               }}
@@ -124,6 +126,7 @@ export default function HomePage() {
             </motion.div>
           ))}
         </motion.div>
+          </div>
       </div>
     </div>
   );
