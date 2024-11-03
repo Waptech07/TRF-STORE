@@ -11,6 +11,8 @@ import LogoBlack from "../../../assets/logo/trf_logo_black.png";
 import baseUrl from "../../urls";
 import ProductDetailsModal from "./product_details_modal";
 import Cart from "./cart";
+import Wishlist from "./wishlist";
+import { FaHeart } from "react-icons/fa";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -24,25 +26,35 @@ export default function Navbar() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [productId, setProductId] = useState("");
 
-  const [cartItems, setCartItems] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
+  const [isWishlistOpen, setIsWishlistOpen] = useState(false);
+
   const toggleCart = () => {
-    setIsCartOpen((prev) => !prev);
+    setIsCartOpen((prev) => {
+      if (!prev) {
+        setIsWishlistOpen(false); // Close wishlist if cart is opening
+      }
+      return !prev;
+    });
   };
+  
+  const toggleWishlist = () => {
+    setIsWishlistOpen((prev) => {
+      if (!prev) {
+        setIsCartOpen(false); // Close cart if wishlist is opening
+      }
+      return !prev;
+    });
+  };
+  
 
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
+    const handleScroll = () => setScrolled(window.scrollY > 50);
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -216,19 +228,26 @@ export default function Navbar() {
               </div>
             )}
           </div>
-
-          {/* Shopping Cart Icon */}
-          <HiShoppingCart
-            className={`text-3xl cursor-pointer ${
-              scrolled ? "text-white" : "text-black"
-            }`}
-            onClick={toggleCart}
-          />
+          <div className="flex gap-5 items-center">
+            {/* Shopping Cart Icon */}
+            <FaHeart
+              className={`text-2xl cursor-pointer ${
+                scrolled ? "text-white" : "text-black"
+              }`}
+              onClick={toggleWishlist}
+            />
+            {/* Shopping Cart Icon */}
+            <HiShoppingCart
+              className={`text-3xl cursor-pointer ${
+                scrolled ? "text-white" : "text-black"
+              }`}
+              onClick={toggleCart}
+            />
+          </div>
         </div>
       </nav>
-      {isCartOpen && (
-        <Cart cartItems={cartItems} onClose={toggleCart} /> // Render the Cart component
-      )}
+      {isCartOpen && <Cart onClose={toggleCart} />}
+      {isWishlistOpen && <Wishlist onClose={toggleWishlist} />}
       <ProductDetailsModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
