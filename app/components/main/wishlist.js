@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { HiOutlineX, HiTrash } from "react-icons/hi";
-import { FaShoppingCart } from "react-icons/fa";
+import { FaHeartBroken, FaShoppingCart } from "react-icons/fa";
 import { HiMiniTrash } from "react-icons/hi2";
 
 const Wishlist = ({ onClose }) => {
@@ -71,7 +71,8 @@ const Wishlist = ({ onClose }) => {
 
       <div className="flex-grow overflow-y-auto space-y-4">
         {wishlistItems.length === 0 ? (
-          <p className="text-center text-gray-600 bg-gray-100 p-4 rounded-md">
+          <p className="text-center text-gray-600 bg-gray-100 p-5 rounded-md">
+            <FaHeartBroken className="text-3xl mx-auto mb-2"/>
             Your wishlist is empty.
           </p>
         ) : (
