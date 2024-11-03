@@ -11,18 +11,22 @@ import {
   Divider,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { FaCartPlus, FaHeart } from "react-icons/fa";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import { FaHeart } from "react-icons/fa";
 import { HiShoppingBag } from "react-icons/hi";
 import { motion } from "framer-motion";
+
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination, Thumbs, Autoplay } from "swiper/modules";
+import "swiper/swiper-bundle.css";
+import "swiper/css/pagination";
+import "swiper/css/thumbs";
 
 const ProductDetailsModal = ({ isOpen, onClose, productId }) => {
   const [product, setProduct] = useState(null);
   const [categoryName, setCategoryName] = useState("");
   const [selectedSize, setSelectedSize] = useState("");
   const [quantity, setQuantity] = useState(1);
+  const [thumbsSwiper, setThumbsSwiper] = useState(null);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -88,25 +92,34 @@ const ProductDetailsModal = ({ isOpen, onClose, productId }) => {
     alert(`${item.quantity} ${item.name} added to cart.`);
   };
 
-  const sliderSettings = {
-    customPaging: (i) => (
-      <a>
-        <img
-          src={product.image_files[i]}
-          alt={`${product.name} ${i + 1}`}
-          style={{ width: "1000px",  borderRadius: "4px" }}
-        />
-      </a>
-    ),
-    dots: true,
-    dotsClass: "slick-dots slick-thumb",
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 2000,
-    pauseOnHover: true,
+  const handleAddToWishlist = () => {
+    if (!selectedSize) {
+      // Notify user to select a size
+      alert("Please select the size you are interested in");
+      return;
+    }
+
+    const wishlistItem = {
+      id: product.id,
+      name: product.name,
+      price: product.discount_price,
+      imageUrl: product.image_files[0],
+      size: selectedSize,
+      quantity: 1,
+    };
+
+    const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+    const isItemInWishlist = wishlist.some(
+      (item) => item.id === wishlistItem.id
+    );
+
+    if (!isItemInWishlist) {
+      wishlist.push(wishlistItem);
+      localStorage.setItem("wishlist", JSON.stringify(wishlist));
+      alert(`${product.name} has been added to your wishlist.`);
+    } else {
+      alert(`${product.name} is already in your wishlist.`);
+    }
   };
 
   return (
@@ -139,23 +152,81 @@ const ProductDetailsModal = ({ isOpen, onClose, productId }) => {
       <DialogContent>
         <Box display="flex" flexDirection={{ xs: "column", md: "row" }} gap={4}>
           {/* Image Slider */}
-          <Box flexShrink={0} width={{ xs: "100%", md: "50%" }} sx={{ px: 2 }}>
-            <Slider {...sliderSettings}>
-              {product.image_files.map((imageUrl, index) => (
-                <div key={index}>
-                  <img
-                    src={imageUrl}
-                    alt={`${product.name} image ${index + 1}`}
-                    style={{
-                      width: "100%",
-                      height: "auto",
-                      borderRadius: "8px",
-                      p: "10px",
-                    }}
-                  />
+          <Box
+            flexShrink={0}
+            width={{ xs: "100%", md: "50%" }}
+            sx={{ px: 2, pt: 2, position: "relative" }}
+          >
+            {product.image_files.length === 1 ? (
+              <img
+                src={product.image_files[0]}
+                alt={`${product.name} image`}
+                style={{
+                  width: "100%",
+                  height: "auto",
+                  borderRadius: "8px",
+                }}
+              />
+            ) : (
+              <>
+                <Swiper
+                  loop={true}
+                  spaceBetween={10}
+                  autoplay={{
+                    delay: 2500,
+                    disableOnInteraction: false,
+                  }}
+                  pagination={{
+                    clickable: true,
+                  }}
+                  thumbs={{ swiper: thumbsSwiper }}
+                  modules={[Pagination, Thumbs, Autoplay]}
+                  style={{ borderRadius: "8px", overflow: "hidden" }}
+                >
+                  {product.image_files.map((imageUrl, index) => (
+                    <SwiperSlide key={index}>
+                      <img
+                        src={imageUrl}
+                        alt={`${product.name} image ${index + 1}`}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          borderRadius: "8px",
+                          objectFit: "cover",
+                        }}
+                      />
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+
+                <div className="thumbs-container">
+                  <Swiper
+                    onSwiper={setThumbsSwiper}
+                    loop={true}
+                    slidesPerView={2}
+                    modules={[Thumbs]}
+                    className="thumbsSwiper"
+                  >
+                    {product.image_files.map((imageUrl, index) => (
+                      <SwiperSlide key={index}>
+                        <img
+                          src={imageUrl}
+                          alt={`${product.name} thumbnail ${index + 1}`}
+                          style={{
+                            width: "60px",
+                            height: "60px",
+                            cursor: "pointer",
+                            objectFit: "cover",
+                            borderRadius: "5px",
+                            border: "1px solid black",
+                          }}
+                        />
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
                 </div>
-              ))}
-            </Slider>
+              </>
+            )}
           </Box>
 
           {/* Product Information */}
@@ -247,9 +318,7 @@ const ProductDetailsModal = ({ isOpen, onClose, productId }) => {
                   width: "100%",
                   color: "#555",
                 }}
-                onClick={() => {
-                  // Handle favourite action
-                }}
+                onClick={handleAddToWishlist}
               >
                 <FaHeart className="text-2xl" />
               </motion.div>
